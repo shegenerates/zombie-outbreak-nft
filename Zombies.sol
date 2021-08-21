@@ -5,12 +5,13 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Zombies is ERC721URIStorage, Ownable {
+contract Zombies is Ownable, ERC721 { //ERC721URIStorage
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
-
-
-    uint public reserved;
+    
+    
+        // Optional mapping for token URIs
+    mapping(uint256 => string) private _tokenURIs;
 
     string public baseUri;
     string public zombieUri;
@@ -19,19 +20,41 @@ contract Zombies is ERC721URIStorage, Ownable {
     uint public numZombiesMinted = 0;
     
     mapping(address => bool) isInfected;
-    mapping(uint => bool) isZombieId;
-    
 
     event Minted(address to, uint id, string uri);
-
-    event PriceUpdated(uint newPrice);
 
     constructor() ERC721("Zombies", "BRAINS") {
       baseUri = "ipfs:/humanURI/";
       zombieUri = "ipfs:/zombieURI/"; 
     }
     
+    /**
+     * @dev See {IERC721Metadata-tokenURI}.
+     */
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        require(_exists(tokenId), "ERC721URIStorage: URI query for nonexistent token");
+
+        string memory _tokenURI = _tokenURIs[tokenId];
+
+        if(isInfected[ownerOf(tokenId)]){
+            return zombieUri;
+        }
+        else{
+            return baseUri;
+        }
+    }
     
+    /**
+     * @dev Sets `_tokenURI` as the tokenURI of `tokenId`.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     */
+    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual {
+        require(_exists(tokenId), "ERC721URIStorage: URI set of nonexistent token");
+        _tokenURIs[tokenId] = _tokenURI;
+    }
 
     /**
      * @dev Converts a `uint256` to its ASCII `string` decimal representation.
@@ -106,14 +129,22 @@ contract Zombies is ERC721URIStorage, Ownable {
         return _tokenIds.current();
     }
     
-    /*
-    * override uri return. if user is infected, their humans are zombies
-    */
+
     
     
     /*
-    * override 
+    * override transfers, infect if sent a zombie.
     */
-    
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 tokenId
+    ) internal virtual override {
+        if(isInfected[from]){
+            isInfected[to] = true;
+        }
+        
+    }
+
 }
     
