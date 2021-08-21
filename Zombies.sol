@@ -60,7 +60,7 @@ contract Zombies is Ownable, ERC721 { //ERC721URIStorage
     /*
     * Mint Humans
     */
-    function mintHuamn(address player, uint numberOfMints)
+    function mintHuman(address player, uint numberOfMints)
         public 
         returns (uint256)
     {
