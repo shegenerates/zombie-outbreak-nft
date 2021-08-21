@@ -56,31 +56,7 @@ contract Zombies is Ownable, ERC721 { //ERC721URIStorage
         _tokenURIs[tokenId] = _tokenURI;
     }
 
-    /**
-     * @dev Converts a `uint256` to its ASCII `string` decimal representation.
-     */
-    function toString(uint256 value) internal pure returns (string memory) {
-        // Inspired by OraclizeAPI's implementation - MIT licence
-        // https://github.com/oraclize/ethereum-api/blob/b42146b063c7d6ee1358846c198246239e9360e8/oraclizeAPI_0.4.25.sol
-
-        if (value == 0) {
-            return "0";
-        }
-        uint256 temp = value;
-        uint256 digits;
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-        bytes memory buffer = new bytes(digits);
-        while (value != 0) {
-            digits -= 1;
-            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
-            value /= 10;
-        }
-        return string(buffer);
-    }
-
+    
     /*
     * Mint Humans
     */
@@ -95,7 +71,7 @@ contract Zombies is Ownable, ERC721 { //ERC721URIStorage
 
             _tokenIds.increment();
             uint256 newItemId = _tokenIds.current();
-            string memory tokenURI = string(abi.encodePacked(baseUri, toString(newItemId),  ".json"));
+            string memory tokenURI = baseUri;
             _mint(player, newItemId);
             _setTokenURI(newItemId, tokenURI);
 
@@ -118,13 +94,12 @@ contract Zombies is Ownable, ERC721 { //ERC721URIStorage
 
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
-        string memory tokenURI = string(abi.encodePacked(zombieUri, toString(newItemId),  ".json"));
+        string memory tokenURI = zombieUri;
         _mint(player, newItemId);
         _setTokenURI(newItemId, tokenURI);
         
         isInfected[player] = true;
 
-        
         numZombiesMinted++;
         return _tokenIds.current();
     }
