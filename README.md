@@ -7,6 +7,8 @@ NFTs of 2500 humans vs 20 zombies. If you're sent a zombie, all your humans turn
 
 Mega Special Prize for zombie that infects the most & last 100 humans left standing. 
 
+Currently deployed at:
+
 Polygon: https://polygonscan.com/address/0x446e57b8584f3606737f187ab18a5cead037bbc4
 
 source: https://github.com/shegenerates/zombie-outbreak-nft
