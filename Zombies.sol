@@ -24,8 +24,8 @@ contract Zombies is Ownable, ERC721 { //ERC721URIStorage
     event Minted(address to, uint id, string uri);
 
     constructor() ERC721("Zombies", "BRAINS") {
-      baseUri = "ipfs:/humanURI/";
-      zombieUri = "ipfs:/zombieURI/"; 
+      baseUri = "ipfs://Qmac3F4cVUQg6LZsgHnBeroVjz4UCZYcWHp68E6kHCYqjG";
+      zombieUri = "ipfs://Qmad9Xft39371GzgNvaTPJEgWQR3rrpcFmVFCord64ZDRv"; 
     }
     
     /**
