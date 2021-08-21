@@ -26,8 +26,8 @@ contract Infected_Season1 is Ownable, ERC721 { //ERC721URIStorage
     event Minted(address to, uint id, string uri);
 
     constructor() ERC721("Zombies", "BRAINS") {
-      baseUri = "ipfs://Qmac3F4cVUQg6LZsgHnBeroVjz4UCZYcWHp68E6kHCYqjG";
-      zombieUri = "ipfs://Qmad9Xft39371GzgNvaTPJEgWQR3rrpcFmVFCord64ZDRv"; 
+      zombieUri = "ipfs://Qmac3F4cVUQg6LZsgHnBeroVjz4UCZYcWHp68E6kHCYqjG";
+      baseUri = "ipfs://Qmad9Xft39371GzgNvaTPJEgWQR3rrpcFmVFCord64ZDRv"; 
       fee = 1 ether;
     }
     
@@ -69,7 +69,7 @@ contract Infected_Season1 is Ownable, ERC721 { //ERC721URIStorage
     {
         require(numHumansMinted + numberOfMints <= 2500, "Maximum amount of Humans already minted."); //10000 item cap (9900 public + 100 team mints)
         require(numberOfMints <= 20, "You cant mint more than 20 Humans at a time.");
-        require(msg.value >= fee * numberOfMints);
+        require(msg.value >= fee * numberOfMints, "fee not correct");
         
         
         
@@ -94,7 +94,7 @@ contract Infected_Season1 is Ownable, ERC721 { //ERC721URIStorage
         returns (uint256)
     {
         require(numZombiesMinted < 20, "Maximum amount of Zombies already minted."); //10000 item cap (9900 public + 100 team mints)
-        require(msg.value == 5 * fee);
+        require(msg.value == 5 * fee, "fee not correct.");
 
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
