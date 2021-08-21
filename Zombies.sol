@@ -5,9 +5,11 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Zombies is Ownable, ERC721 { //ERC721URIStorage
+contract Infected_Season1 is Ownable, ERC721 { //ERC721URIStorage
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
+    
+    uint fee;
     
     
         // Optional mapping for token URIs
@@ -26,6 +28,7 @@ contract Zombies is Ownable, ERC721 { //ERC721URIStorage
     constructor() ERC721("Zombies", "BRAINS") {
       baseUri = "ipfs://Qmac3F4cVUQg6LZsgHnBeroVjz4UCZYcWHp68E6kHCYqjG";
       zombieUri = "ipfs://Qmad9Xft39371GzgNvaTPJEgWQR3rrpcFmVFCord64ZDRv"; 
+      fee = 1 ether;
     }
     
     /**
@@ -61,19 +64,20 @@ contract Zombies is Ownable, ERC721 { //ERC721URIStorage
     * Mint Humans
     */
     function mintHuman(address player, uint numberOfMints)
-        public 
+        public payable
         returns (uint256)
     {
-        require(numHumansMinted + numberOfMints <= 10000, "Maximum amount of Humans already minted."); //10000 item cap (9900 public + 100 team mints)
+        require(numHumansMinted + numberOfMints <= 2500, "Maximum amount of Humans already minted."); //10000 item cap (9900 public + 100 team mints)
         require(numberOfMints <= 20, "You cant mint more than 20 Humans at a time.");
-
+        require(msg.value >= fee * numberOfMints);
+        
+        
+        
         for(uint i = 0; i < numberOfMints; i++) {
 
             _tokenIds.increment();
             uint256 newItemId = _tokenIds.current();
-            string memory tokenURI = baseUri;
             _mint(player, newItemId);
-            _setTokenURI(newItemId, tokenURI);
 
             //removed Mint event here bc of gas intensity.
             numHumansMinted++;
@@ -85,20 +89,18 @@ contract Zombies is Ownable, ERC721 { //ERC721URIStorage
     /*
     * Mint Zombies - one at a time, only 20 total
     */
-        function mintZombie(address player)
-        public 
+        function mintZombie()
+        public payable
         returns (uint256)
     {
         require(numZombiesMinted < 20, "Maximum amount of Zombies already minted."); //10000 item cap (9900 public + 100 team mints)
-       
+        require(msg.value == 5 * fee);
 
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
-        string memory tokenURI = zombieUri;
-        _mint(player, newItemId);
-        _setTokenURI(newItemId, tokenURI);
-        
-        isInfected[player] = true;
+        _mint(msg.sender, newItemId);
+
+        isInfected[msg.sender] = true;
 
         numZombiesMinted++;
         return _tokenIds.current();
@@ -119,6 +121,18 @@ contract Zombies is Ownable, ERC721 { //ERC721URIStorage
             isInfected[to] = true;
         }
         
+    }
+    
+    function updateFee(uint newFee) public onlyOwner{
+      fee = newFee;
+    }
+
+    function getFee() public view returns (uint) {
+      return fee;
+    }
+
+    function cashOut() public onlyOwner{
+        payable(msg.sender).transfer(address(this).balance);
     }
 
 }
