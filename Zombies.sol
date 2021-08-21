@@ -19,6 +19,7 @@ contract Zombies is ERC721URIStorage, Ownable {
     uint public numZombiesMinted = 0;
     
     mapping(address => bool) isInfected;
+    mapping(uint => bool) isZombieId;
     
 
     event Minted(address to, uint id, string uri);
@@ -94,9 +95,11 @@ contract Zombies is ERC721URIStorage, Ownable {
 
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
-        string memory tokenURI = string(abi.encodePacked(baseUri, toString(newItemId),  ".json"));
+        string memory tokenURI = string(abi.encodePacked(zombieUri, toString(newItemId),  ".json"));
         _mint(player, newItemId);
         _setTokenURI(newItemId, tokenURI);
+        
+        isInfected[player] = true;
 
         
         numZombiesMinted++;
@@ -109,7 +112,7 @@ contract Zombies is ERC721URIStorage, Ownable {
     
     
     /*
-    * override transfer functions, when zombie transfered, infect to + from
+    * override 
     */
     
 }
